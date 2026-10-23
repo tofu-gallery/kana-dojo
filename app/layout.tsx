@@ -1,8 +1,8 @@
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-23: removed Google
+// AdSense, Google Analytics, Vercel Web Analytics and Vercel Speed Insights so
+// a copy of KanaDojo runs with no advertising or tracking. See TOFU.md.
 import './globals.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-import GoogleAnalytics from '@/core/analytics/GoogleAnalytics';
 // Performance rescue: Microsoft Clarity is intentionally disabled for now.
 // import MSClarity from '@/core/analytics/MSClarity';
 import {
@@ -11,7 +11,6 @@ import {
 } from '@/shared/ui-composite/SEO/StructuredData';
 import { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
-import Script from 'next/script';
 import SessionPrefetch from '@/shared/ui-composite/Performance/SessionPrefetch';
 
 const googleVerificationToken = process.env.GOOGLE_VERIFICATION_TOKEN || '';
@@ -117,15 +116,6 @@ export const metadata: Metadata = {
   category: 'education',
 };
 
-// Move analytics condition to a constant to avoid repeated evaluation
-const isAnalyticsEnabled =
-  process.env.NODE_ENV === 'production' &&
-  process.env.ANALYTICS_DISABLED !== 'true';
-
-const isAdSenseEnabled =
-  process.env.NODE_ENV === 'production' &&
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
-
 interface RootLayoutProps {
   readonly children: React.ReactNode;
 }
@@ -141,57 +131,16 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <head>
         <StructuredData data={kanaDojoSchema} />
         {/* DNS prefetch for external domains - resolve DNS early */}
-        {isAnalyticsEnabled && (
-          <>
-            <link rel='dns-prefetch' href='https://www.googletagmanager.com' />
-            <link rel='dns-prefetch' href='https://www.clarity.ms' />
-            <link rel='dns-prefetch' href='https://vercel-analytics.com' />
-            <link
-              rel='dns-prefetch'
-              href='https://vitals.vercel-insights.com'
-            />
-          </>
-        )}
         <link rel='dns-prefetch' href='https://translation.googleapis.com' />
         {/* Preconnect to critical domains - establish early connections */}
-        {isAnalyticsEnabled && (
-          <>
-            <link
-              rel='preconnect'
-              href='https://www.googletagmanager.com'
-              crossOrigin='anonymous'
-            />
-            <link
-              rel='preconnect'
-              href='https://vercel-analytics.com'
-              crossOrigin='anonymous'
-            />
-          </>
-        )}
         <link
           rel='preconnect'
           href='https://translation.googleapis.com'
           crossOrigin='anonymous'
         />
-        {isAdSenseEnabled && (
-          <Script
-            async
-            src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5494430364707020'
-            crossOrigin='anonymous'
-            strategy='afterInteractive'
-          />
-        )}
       </head>
       <body>
         <SessionPrefetch />
-        {isAnalyticsEnabled && (
-          <>
-            <GoogleAnalytics />
-            {/* <MSClarity /> */}
-            <Analytics />
-            <SpeedInsights />
-          </>
-        )}
         {children}
       </body>
     </html>

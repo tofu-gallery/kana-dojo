@@ -1,5 +1,9 @@
 'use client';
 
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-23: ads are switched off
+// for good in copies (`isAdSenseEnabled` below is always false), so no ad slot
+// for the upstream site's AdSense account is ever rendered. See TOFU.md.
+
 import { useEffect, useRef } from 'react';
 
 const ADSENSE_CLIENT_ID = 'ca-pub-5494430364707020';
@@ -15,9 +19,7 @@ interface AdSenseDisplayProps {
   className?: string;
 }
 
-const isAdSenseEnabled =
-  process.env.NODE_ENV === 'production' &&
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
+const isAdSenseEnabled = false;
 
 export default function AdSenseDisplay({
   slot,
