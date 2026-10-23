@@ -1,18 +1,10 @@
 // instrumentation-client.ts
-import * as Sentry from '@sentry/nextjs';
-
-Sentry.init({
-  dsn: 'https://a6f82883d78e424ee7b578556b78743d@o4511608063197184.ingest.us.sentry.io/4511608067981312',
-  // Performance rescue: Sentry Replay is intentionally disabled for now.
-  // integrations: [Sentry.replayIntegration()],
-  tracesSampleRate: 0.1,
-  enableLogs: true,
-  // replaysSessionSampleRate: 0.1,
-  // replaysOnErrorSampleRate: 1.0,
-  sendDefaultPii: true,
-});
-
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+//
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-23: removed the Sentry
+// browser SDK set-up, which sent errors, traces, logs and visitor details to
+// the upstream site's Sentry project. The stale-chunk reload handler below is
+// kept unchanged. See TOFU.md.
+export {};
 
 /**
  * Global Chunk Load Error Handler
