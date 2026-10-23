@@ -1,3 +1,5 @@
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-23: the Turnstile secret
+// is stubbed under its new name, `TURNSTILE_SECRET` (see route.ts and TOFU.md).
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 
@@ -109,7 +111,7 @@ describe('POST /api/translate', () => {
     vi.stubEnv('AZURE_TRANSLATOR_KEY', 'azure-test-key');
     vi.stubEnv('GOOGLE_TRANSLATE_API_KEY', 'test-key');
     vi.stubEnv('AWS_REGION', 'eu-central-1');
-    vi.stubEnv('TURNSTILE_SECRET_KEY', '');
+    vi.stubEnv('TURNSTILE_SECRET', '');
 
     mockCheckTranslateRateLimit.mockResolvedValue(allowedRateLimitResult());
     mockCheckTranslateUsageLimit.mockResolvedValue(allowedUsageResult());

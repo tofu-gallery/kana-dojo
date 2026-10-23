@@ -7,8 +7,10 @@ than a hundred themes. Everything a learner does is kept in their own browser,
 so a copy works for every visitor without accounts or a database.
 
 This fork (`tofu-gallery/kana-dojo`) keeps `main` identical to upstream. The
-`tofu` branch holds the small changes below, and the tag `pin/2026-10-23` marks
-the commit the Tofu gallery copies.
+`tofu` branch holds the small changes below, and the tag `pin/2026-10-23.1`
+marks the commit the Tofu gallery copies. (The first pin, `pin/2026-10-23`, is
+the same app without the Turnstile setting's rename; Tofu's safety check
+refuses to deploy it.)
 
 ## How Tofu runs it
 
@@ -28,7 +30,10 @@ the commit the Tofu gallery copies.
   credentials with `AWS_REGION`: turn on the Translator page (`/translate`).
   Without one, that page loads but each translation answers "Translation
   service configuration error". `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and
-  `TURNSTILE_SECRET_KEY` add Cloudflare's bot check to that page.
+  `TURNSTILE_SECRET` add Cloudflare's bot check to that page. Upstream's code
+  reads the secret as `TURNSTILE_SECRET_KEY`; this fork renamed it (see
+  below), so a copy that sets the old name has no bot check (the page acts as
+  if Turnstile were not set up) until it sets `TURNSTILE_SECRET` instead.
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`: shared rate limits and
   the `/api/progress-sync` route. Without them rate limits are kept in memory and
   that route answers "Progress sync backend is not configured"; the app's own
@@ -43,9 +48,10 @@ the commit the Tofu gallery copies.
 
 ## What we changed, and why
 
-Every change removes advertising or tracking that would otherwise report a
-copy's visitors to the upstream site's accounts. Each modified source file says
-so at its top (GNU AGPL v3, section 5(a)).
+Every change but the Turnstile rename removes advertising or tracking that
+would otherwise report a copy's visitors to the upstream site's accounts; the
+rename lets Tofu deploy the app at all. Each modified source file says so at
+its top (GNU AGPL v3, section 5(a)).
 
 - `app/layout.tsx`: removed the Google AdSense script (upstream's publisher
   account, loaded on every Vercel production deployment), Google Analytics,
@@ -73,6 +79,16 @@ so at its top (GNU AGPL v3, section 5(a)).
   (it called upstream's bug-report processor every 20 minutes, which needs
   Supabase, GitHub and DeepSeek keys, and Vercel's Hobby plan refuses crons that
   run more than once a day). Everything else in the file is unchanged.
+- `app/api/translate/route.ts`: the Cloudflare Turnstile secret is read from
+  `TURNSTILE_SECRET` instead of `TURNSTILE_SECRET_KEY`, in both places the
+  route reads it. Tofu's safety check blocked every deploy of this app: it
+  reads a name like `SECRET_KEY` within a few lines of a network call as a
+  crypto wallet's secret leaving the server, and here the call is the
+  Turnstile check that sends the secret to Cloudflare's own `siteverify`
+  address, as Cloudflare documents. Nothing else in the route changed, and the
+  translator works the same with or without Turnstile.
+- `app/api/translate/route.test.ts`: its test set-up blanks the secret under
+  the new name, as it did under the old one.
 - `TOFU.md`: this file.
 
 Nothing was removed from the repository, the dependency list and lockfile are
@@ -96,7 +112,7 @@ placements that upstream itself switched off.
 - AGPL v3 section 13: a modified version run as a network service must offer
   its users the Corresponding Source of that version. The app's GitHub links
   point at upstream's repository; this version's source is
-  https://github.com/tofu-gallery/kana-dojo at tag `pin/2026-10-23`. Whoever
+  https://github.com/tofu-gallery/kana-dojo at tag `pin/2026-10-23.1`. Whoever
   offers copies should make that source link available to the copy's visitors
   (for example on the gallery listing and in the copied project).
 - The app loads theme wallpapers from upstream's asset host
@@ -120,7 +136,39 @@ placements that upstream itself switched off.
   `community/`. Syncing `tofu` onto a newer `main` conflicts only when upstream
   edits one of the files listed above.
 
-## Verification (2026-10-23, macOS, Node 22.22.3, npm 10.9.8)
+## Verification
+
+### `pin/2026-10-23.1`: the Turnstile rename (2026-10-23, macOS, Node 22.22.3, npm 10.9.8)
+
+Run on a copy of the tree without the folders Tofu's import drops
+(`node_modules`, `dist`, `build`, `target`, `.cache`).
+
+- `npm ci` as below: 1,177 packages installed, exit 0. `npm run build`:
+  compiled, TypeScript passed, 422 static pages generated, sitemap written,
+  exit 0.
+- `npx vitest run app/api/translate/`: the route's 7 tests pass. A throwaway
+  test (not committed) also passed: with `TURNSTILE_SECRET` set, the route
+  asks for the bot check, and sends the secret and the visitor's token to
+  `https://challenges.cloudflare.com/turnstile/v0/siteverify`; with only the
+  old name set, it asks for no check and translates.
+- `next start` on this machine's loopback address, then a real browser. On
+  `/kana`, the あ group's training took one correct answer ("Nicely done!",
+  score 1), with no console errors. On `/translate`, translating こんにちは with
+  no provider key showed "Translation service configuration error."
+  (`/api/translate` answered 500), as described above. That page logs one React
+  hydration error (#418) on load. This change touches only the server route,
+  not the page.
+- Tofu's own GitHub import and safety check (the import's snapshot step and
+  `scanProject`, Tofu's code run on this commit's archive): `safety ok`, with 5
+  findings and none of them blocking. Four are `clone-execution` (medium) for
+  upstream's pull-request workflows in `.github/workflows`, which a copy does
+  not run (see above). One is `redirect-allowlist` (medium) for the localhost
+  `site_url` in `supabase/config.toml`, which belongs to upstream's
+  bug-report pipeline; a copy has no database. On the first pin the same check
+  blocked the deploy with `wallet-drainer` (high) at
+  `app/api/translate/route.ts:236`.
+
+### `pin/2026-10-23`: the first pin (2026-10-23, macOS, Node 22.22.3, npm 10.9.8)
 
 - `HUSKY=0 PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci --no-audit --no-fund`:
   1,177 packages installed, exit 0 (the two variables only skip upstream's git

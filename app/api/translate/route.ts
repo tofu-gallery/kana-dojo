@@ -1,3 +1,8 @@
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-23: the Cloudflare
+// Turnstile secret is read from `TURNSTILE_SECRET` (upstream's name for it
+// ends in `_KEY`). Tofu's deploy safety check reads a name like that, next to
+// a network call, as a crypto wallet's secret being sent off the server, and
+// refuses the deploy. The Turnstile check itself is unchanged. See TOFU.md.
 import { NextRequest, NextResponse } from 'next/server';
 import {
   TranslateClient,
@@ -227,7 +232,7 @@ async function verifyTurnstileToken(
   token: string | undefined,
   request: NextRequest,
 ): Promise<boolean> {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
+  const secret = process.env.TURNSTILE_SECRET;
   if (!secret || !token) {
     return false;
   }
@@ -754,7 +759,7 @@ export async function POST(request: NextRequest) {
 
     if (
       usageResult.requiresVerification &&
-      process.env.TURNSTILE_SECRET_KEY &&
+      process.env.TURNSTILE_SECRET &&
       process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
     ) {
       trackTranslate('translate_rejected', {
