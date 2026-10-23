@@ -3,7 +3,6 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "buildCommand": "npm run clean:all && npm run build",
-  "ignoreCommand": "bash scripts/vercel-ignore.sh",
   "functions": {
     "app/api/process-bug-reports/route.ts": {
       "maxDuration": 60
@@ -15,12 +14,6 @@
       "maxDuration": 10
     }
   },
-  "crons": [
-    {
-      "path": "/api/process-bug-reports",
-      "schedule": "*/20 * * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
