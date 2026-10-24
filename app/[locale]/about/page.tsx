@@ -1,8 +1,13 @@
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-24: the "View on GitHub"
+// button opens this copy's own source code (NEXT_PUBLIC_SOURCE_URL, read in
+// shared/config/sourceCode.ts) instead of upstream's repository (GNU AGPL v3,
+// section 13). See TOFU.md.
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { routing } from '@/core/i18n/routing';
 import { CircleHelp } from 'lucide-react';
 import LegalLayout from '@/shared/ui-composite/layout/LegalLayout';
+import { SOURCE_CODE_URL } from '@/shared/config/sourceCode';
 
 export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }));
@@ -218,7 +223,7 @@ export default function AboutPage() {
         contributions, feedback, and suggestions from the community.
       </p>
       <a
-        href='https://github.com/lingdojo/kanadojo'
+        href={SOURCE_CODE_URL}
         target='_blank'
         rel='noopener noreferrer'
         className='mb-12 inline-flex items-center gap-2 rounded-lg bg-(--main-color) px-6 py-3 font-semibold text-(--background-color) transition-opacity hover:opacity-90'

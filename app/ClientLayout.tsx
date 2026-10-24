@@ -1,4 +1,9 @@
 'use client';
+
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-24: every page now ends
+// with SourceCodeFooter, a "Source code" link to this copy's own source code
+// on screens where the bottom bar is hidden (GNU AGPL v3, section 13). See
+// TOFU.md.
 import clsx from 'clsx';
 import { useState, useEffect, startTransition, useMemo, useRef } from 'react';
 import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
@@ -22,6 +27,7 @@ import {
 import { getWallpaperById } from '@/features/Preferences/data/wallpapers/wallpapers';
 import BackToTop from '@/shared/ui-composite/navigation/BackToTop';
 import MobileBottomBar from '@/shared/ui-composite/layout/BottomBar';
+import SourceCodeFooter from '@/shared/ui-composite/layout/SourceCodeFooter';
 import { useVisitTracker } from '@/features/Progress/hooks/useVisitTracker';
 import { getGlobalAdaptiveSelector } from '@/shared/utils/adaptiveSelection';
 import GlobalAudioController from '@/shared/ui-composite/layout/GlobalAudioController';
@@ -369,6 +375,7 @@ export default function ClientLayout({
       <ServiceWorkerRegistration />
       <VisualEffectsRenderer />
       {children}
+      <SourceCodeFooter />
       <TransitionAdvertisementOverlay
         isOpen={isTransitionAdvertisementOpen}
         placement='after'

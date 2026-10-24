@@ -7,10 +7,11 @@ than a hundred themes. Everything a learner does is kept in their own browser,
 so a copy works for every visitor without accounts or a database.
 
 This fork (`tofu-gallery/kana-dojo`) keeps `main` identical to upstream. The
-`tofu` branch holds the small changes below, and the tag `pin/2026-10-23.1`
-marks the commit the Tofu gallery copies. (The first pin, `pin/2026-10-23`, is
-the same app without the Turnstile setting's rename; Tofu's safety check
-refuses to deploy it.)
+`tofu` branch holds the small changes below, and the tag `pin/2026-10-24`
+marks the commit the Tofu gallery copies. (The pin before it,
+`pin/2026-10-23.1`, is the same app without the links to its own source code;
+the first pin, `pin/2026-10-23`, also lacks the Turnstile setting's rename, and
+Tofu's safety check refuses to deploy it.)
 
 ## How Tofu runs it
 
@@ -41,6 +42,10 @@ refuses to deploy it.)
 - `NEXT_PUBLIC_SITE_URL` and `SITE_URL`: the copy's own address for the
   breadcrumb structured data and the generated sitemap. Without them both name
   `https://kanadojo.com`.
+- `NEXT_PUBLIC_SOURCE_URL`: where the copy's source code is, opened by its
+  **Source code** and GitHub links. Tofu's gallery sets it when it makes a
+  copy; see [Source code](#source-code-2026-10-24) below. Without it the links
+  open `https://github.com/tofu-gallery/kana-dojo`.
 - Everything else the code reads (`GITHUB_PAT`, `CRON_SECRET`, `SUPABASE_*`,
   `TALLY_*`, `DEEPSEEK_*`, `INDEXNOW_KEY`, the `trigger-*` and bug-report
   routes) is upstream's own operations tooling. Those routes refuse requests
@@ -48,10 +53,11 @@ refuses to deploy it.)
 
 ## What we changed, and why
 
-Every change but the Turnstile rename removes advertising or tracking that
-would otherwise report a copy's visitors to the upstream site's accounts; the
-rename lets Tofu deploy the app at all. Each modified source file says so at
-its top (GNU AGPL v3, section 5(a)).
+Most changes remove advertising or tracking that would otherwise report a
+copy's visitors to the upstream site's accounts; the Turnstile rename lets Tofu
+deploy the app at all, and the source-code links let every visitor find the
+code their copy runs. Each modified or added source file says so at its top
+(GNU AGPL v3, section 5(a)).
 
 - `app/layout.tsx`: removed the Google AdSense script (upstream's publisher
   account, loaded on every Vercel production deployment), Google Analytics,
@@ -89,15 +95,51 @@ its top (GNU AGPL v3, section 5(a)).
   translator works the same with or without Turnstile.
 - `app/api/translate/route.test.ts`: its test set-up blanks the secret under
   the new name, as it did under the old one.
+- `shared/config/sourceCode.ts` (new),
+  `shared/ui-composite/layout/SourceCodeFooter.tsx` (new),
+  `shared/ui-composite/layout/BottomBar.tsx`, `app/ClientLayout.tsx`,
+  `features/MainMenu/index.tsx` and `app/[locale]/about/page.tsx`: links to
+  this copy's own source code; see [Source code](#source-code-2026-10-24)
+  below.
 - `TOFU.md`: this file.
 
 Nothing was removed from the repository, the dependency list and lockfile are
-upstream's, and the name, logo, favicon, links and texts are untouched. Already
-inert upstream code was left as it was: the Microsoft Clarity component (fully
-commented out), the client-side PostHog block (commented out),
-`core/analytics/GoogleAnalytics.tsx` (no longer imported), the Sentry example
-page and API route (with no Sentry client they send nothing), and the ad
-placements that upstream itself switched off.
+upstream's, and the name, logo, favicon and texts are untouched; the only
+links changed are the GitHub links named under
+[Source code](#source-code-2026-10-24). Already inert upstream code was left as
+it was: the Microsoft Clarity component (fully commented out), the client-side
+PostHog block (commented out), `core/analytics/GoogleAnalytics.tsx` (no longer
+imported), the Sentry example page and API route (with no Sentry client they
+send nothing), and the ad placements that upstream itself switched off.
+
+## Source code (2026-10-24)
+
+GNU AGPL v3 section 13 asks a changed copy that people use over a network to
+offer them its source code.
+
+- A **Source code** link opens `NEXT_PUBLIC_SOURCE_URL` on every page: in the
+  bottom bar on wide screens, and at the foot of each page on screens narrower
+  than 1,024 pixels (phones, most tablets), where the app hides that bar. On
+  wide screens the bar, and the link in it, is hidden only while a visitor has
+  switched on the home page's decorations view. The bottom bar's GitHub icon,
+  the home page's GitHub icon and the about page's "View on GitHub →" button
+  open the same address instead of upstream's repository. The bar's other
+  words are written in English in the code (the app runs in English only and
+  does not translate them), so the link's words are too.
+- Tofu's app gallery saves `NEXT_PUBLIC_SOURCE_URL` as
+  `https://github.com/tofu-gallery/kana-dojo/tree/<the pinned commit>` when it
+  makes a copy, so the link opens exactly the code the copy runs. Unset (or
+  empty), the links open this repository,
+  `https://github.com/tofu-gallery/kana-dojo`.
+- An owner who changes the code must point `NEXT_PUBLIC_SOURCE_URL` at their
+  own source, such as their own repository, and deploy again: like every
+  `NEXT_PUBLIC_*` value, it is fixed when the app is built.
+- Still naming upstream's repository, and left as they are: the structured
+  data for search engines (`sameAs`, and the Anki converter page's
+  `downloadUrl`), `/llms.txt`, the contact line of `/security.txt`, the
+  credits component that no page uses (`features/Legal/credits/Credits.tsx`)
+  and a commented-out link to upstream's theming documentation in
+  `features/Preferences/components/display/Themes.tsx`.
 
 ## Upstream
 
@@ -110,19 +152,17 @@ placements that upstream itself switched off.
 ## Before offering it to users
 
 - AGPL v3 section 13: a modified version run as a network service must offer
-  its users the Corresponding Source of that version. The app's GitHub links
-  point at upstream's repository; this version's source is
-  https://github.com/tofu-gallery/kana-dojo at tag `pin/2026-10-23.1`. Whoever
-  offers copies should make that source link available to the copy's visitors
-  (for example on the gallery listing and in the copied project).
+  its users the Corresponding Source of that version. Since `pin/2026-10-24`
+  every page links to it (see [Source code](#source-code-2026-10-24)), and a
+  copy's `NEXT_PUBLIC_SOURCE_URL` has to name the code that copy runs.
 - The app loads theme wallpapers from upstream's asset host
   (`https://assets.kanadojo.com/wallpapers/`). Those images are not in the
   repository; if upstream moves them, the wallpaper themes lose their pictures
   and the rest of the app is unaffected.
 - Upstream's own prompts stay as they are: a donation dialog (Ko-fi, for the
   LingDojo authors) appears on some page changes, the bottom bar links to
-  upstream's Discord, GitHub and Ko-fi, and the bug buttons open upstream's
-  Tally form.
+  upstream's Discord and Ko-fi (its GitHub icon opens the copy's own source),
+  and the bug buttons open upstream's Tally form.
 - Pages name `https://kanadojo.com` as their canonical address, Open Graph URL
   and structured-data URL; upstream hard-codes these, so search engines treat
   a copy as a duplicate of kanadojo.com. `NEXT_PUBLIC_SITE_URL` and `SITE_URL`
@@ -137,6 +177,22 @@ placements that upstream itself switched off.
   edits one of the files listed above.
 
 ## Verification
+
+### `pin/2026-10-24`: the source-code links (2026-10-24, macOS, Node 22.22.3, npm 10.9.8)
+
+- `HUSKY=0 PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci --no-audit --no-fund`:
+  1,177 packages installed, exit 0.
+- `npx tsc --noEmit`: no errors. `npx eslint .`: the changed files have only
+  the 9 warnings they already had, all in upstream's lines; the 8 errors
+  (`react-hooks/refs`) are in five files this change does not touch.
+- A throwaway test (not committed) rendered the narrow-screen footer, the
+  bottom bar and the about page in jsdom. With `NEXT_PUBLIC_SOURCE_URL` set to
+  a `tree/<commit>` address, the footer's and the bar's **Source code** links,
+  the bar's GitHub icon and the about page's button all open that address in a
+  new tab; unset or empty, they open `https://github.com/tofu-gallery/kana-dojo`.
+  None of the rendered links names upstream's repository.
+- `npm run build` was not run for this pin: the machine was too busy at the
+  time. Tofu's own deploy of the pin builds it.
 
 ### `pin/2026-10-23.1`: the Turnstile rename (2026-10-23, macOS, Node 22.22.3, npm 10.9.8)
 

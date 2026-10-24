@@ -1,4 +1,9 @@
 'use client';
+
+// Modified by Tofu (tofu-gallery/kana-dojo) on 2026-10-24: the GitHub icon and
+// a new "Source code" link open this copy's own source code
+// (NEXT_PUBLIC_SOURCE_URL, read in shared/config/sourceCode.ts) instead of
+// upstream's repository (GNU AGPL v3, section 13). See TOFU.md.
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -27,6 +32,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import PatchNotesModal from '@/features/PatchNotes/components/PatchNotesModal';
 
 import { APP_VERSION_DISPLAY } from '@/shared/config/constants';
+import { SOURCE_CODE_URL } from '@/shared/config/sourceCode';
 
 const USE_BADGE_STYLE = false;
 
@@ -45,7 +51,7 @@ const socialLinks: SocialLink[] = [
   },
   {
     icon: faGithub,
-    url: 'https://github.com/lingdojo/kana-dojo',
+    url: SOURCE_CODE_URL,
     type: 'fontawesome',
   },
   {
@@ -203,6 +209,16 @@ const MobileBottomBar = () => {
         <span className='hidden text-sm text-(--main-color) select-none lg:inline-block'>
           ~
         </span>
+        <a
+          href={SOURCE_CODE_URL}
+          target='_blank'
+          rel='noopener noreferrer'
+          onClick={() => playClick()}
+          className='text-xs text-(--secondary-color) hover:cursor-pointer hover:text-(--main-color)'
+        >
+          Source code
+        </a>
+        <span className='text-sm text-(--main-color) select-none'>~</span>
         {infoItems.map((item, idx) => {
           const content = (
             <button
