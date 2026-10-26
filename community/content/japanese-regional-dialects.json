@@ -335,5 +335,19 @@
     "english": "no good",
     "region": "Kansai",
     "note": "Used for prohibition/failure. (Set 6)"
-  }
+  },
+  {
+    "dialect": "〜やねん",
+    "standardJapanese": "〜なんだ",
+    "english": "it is that...",
+    "region": "Kansai",
+    "note": "Explanatory ending in conversation. (Set 1)"
+  },
+  {
+  "dialect": "にふぇーでーびる",
+  "standardJapanese": "ありがとうございます",
+  "english": "thank you",
+  "region": "Okinawa",
+  "note": "Okinawan gratitude expression. (Set 6)"
+}
 ]
