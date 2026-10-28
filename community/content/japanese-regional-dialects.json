@@ -349,5 +349,12 @@
   "english": "thank you",
   "region": "Okinawa",
   "note": "Okinawan gratitude expression. (Set 6)"
-}
+},
+  {
+    "dialect": "ぶち",
+    "standardJapanese": "とても",
+    "english": "very",
+    "region": "Yamaguchi/Hiroshima",
+    "note": "Regional intensifier. (Set 3)"
+  }
 ]
