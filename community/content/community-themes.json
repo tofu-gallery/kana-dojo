@@ -514,5 +514,17 @@
     "backgroundColor": "oklch(18.0% 0.030 150.0 / 1)",
     "mainColor": "oklch(70.0% 0.120 145.0 / 1)",
     "secondaryColor": "oklch(60.0% 0.085 120.0 / 1)"
+  },
+  {
+    "id": "ocean-tofu",
+    "backgroundColor": "oklch(21.0% 0.042 235.0 / 1)",
+    "mainColor": "oklch(92.0% 0.025 240.0 / 1)",
+    "secondaryColor": "oklch(70.0% 0.135 225.0 / 1)"
+  },
+  {
+    "id": "gingko-avenue",
+    "backgroundColor": "oklch(23.0% 0.020 75.0 / 1)",
+    "mainColor": "oklch(82.0% 0.155 95.0 / 1)",
+    "secondaryColor": "oklch(62.0% 0.085 55.0 / 1)"
   }
 ]
