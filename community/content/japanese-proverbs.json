@@ -390,9 +390,15 @@
     "meaning": "Treasure every encounter, for it will never recur"
   },
   {
-    "japanese": "千里の道も一歩から",
-    "romaji": "Senri no michi mo ippo kara",
-    "english": "A journey of a thousand miles begins with one step",
-    "meaning": "Start small"
+  "japanese": "能ある鷹は爪を隠す",
+  "romaji": "Nou aru taka wa tsume wo kakusu",
+  "english": "A skilled hawk hides its talons",
+  "meaning": "True skill is modest"
+  },
+  {
+    "japanese": "縁は異なもの味なもの",
+    "romaji": "En wa inamono aji na mono",
+    "english": "Fate is strange yet delightful",
+    "meaning": "Chance connections can be surprisingly good"
   }
 ]
